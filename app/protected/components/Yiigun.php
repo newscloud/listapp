@@ -15,7 +15,9 @@ class Yiigun extends CComponent
   public function send_simple_message($to='',$subject='',$body='',$from='') {
     if ($from == '') 
       $from = Yii::app()->params['supportEmail'];
-    $domain = substr(strrchr($from, "@"), 1);      
+    $domain = Yii::app()->params['mail_domain'];
+    // use only if supportEmail and from email are in mailgun account
+  //  $domain = substr(strrchr($from, "@"), 1);      
     $result = $this->mg->sendMessage($domain,array('from' => $from,
                                                'to' => $to,
                                                'subject' => $subject,
