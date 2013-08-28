@@ -55,13 +55,13 @@ class Yiigun extends CComponent
    }  
 
    public function memberBulkAdd($list='',$json_str='') {
-     $result = $this->mg->post("lists/".$list.'/members.json',array('members' => $json_str,
-                                                   'subscribed' => true,
-                                                   'upsert' => 'yes'
-                                                   ));
+     $result = $this->mg->post("lists/".$list.'/members.json',array(
+    'members' => $json_str,
+     'subscribed' => true,
+     'upsert' => 'yes'
+     ));
      return $result->http_response_body;    
    }
-
   
   public function memberAdd($list='',$email='',$name='') {
     $result = $this->mg->post("lists/".$list.'/members',array('address'=>$email,'name'=>$name,'subscribed' => true,'upsert' => 'yes'));

@@ -34,9 +34,9 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/main.js');
 
   <div class="footer" >
     <ul class="inline">
-      <li> <a href="http://blog.mailgun.com/post/turnkey-mailing-list-applet-using-the-mailgun-api">About</a><span class="dot divider"> &middot;</span></li>
-       <li ><a href="https://github.com/newscloud/listapp">Code</a><span class="dot divider"> &middot;</span></li>
-      <li ><a href="https://github.com/newscloud/listapp/issues">Help</a><span class="dot divider"> &middot;</span></li>
+      <li> <a href="http://blog.mailgun.com/post/turnkey-mailing-list-applet-using-the-mailgun-php-sdk">About</a><span class="dot divider"> &middot;</span></li>
+       <li ><a href="https://github.com/mailgun/listapp">Code</a><span class="dot divider"> &middot;</span></li>
+      <li ><a href="https://github.com/mailgun/listapp/issues">Help</a><span class="dot divider"> &middot;</span></li>
 <!--       <li ><a href="/privacy">Privacy</a><span class="dot divider"> &middot;</span></li> -->
 <li><a href="http://mailgun.com">Mailgun</a><span class="dot divider"> &middot;</span></li>
       <li><a href="http://jeffreifman.com/consulting">NewsCloud Consulting</a></li>

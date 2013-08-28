@@ -48,9 +48,9 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/main.js');
 			'htmlOptions'=>array('class'=>'pull-right'),
 			'items' => array(
         array('label'=>'About', 'items'=> array(
-          array('url'=>'http://blog.mailgun.com/post/turnkey-mailing-list-applet-using-the-mailgun-api', 'label'=>'Read the tutorial'),
-        array('url'=>'https://github.com/newscloud/listapp', 'label'=>'Get the code'),
-        array('url'=>'http://documentation.mailgun.com/api-mailinglists.html', 'label'=>'Mailgun documentation'),
+          array('url'=>'http://blog.mailgun.com/post/turnkey-mailing-list-applet-using-the-mailgun-php-sdk', 'label'=>'Read the tutorial'),
+        array('url'=>'https://github.com/mailgun/listapp', 'label'=>'Get the code'),
+        array('url'=>'http://documentation.mailgun.com/api-mailinglists.html', 'label'=>'Mailgun documentation'),        array('url'=>'blog.mailgun.com/post/the-php-sdk-the-first-of-many-official-mailgun-sdks/', 'label'=>'Mailgun PHP SDK'),
         array('url'=>'http://jeffreifman.com/consulting', 'label'=>'About NewsCloud'),
 				)),
 				array('label'=>'Account', 'items'=> array(

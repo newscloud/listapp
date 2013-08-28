@@ -100,9 +100,9 @@ Alert: If you run into a problem with directory permissions seeing the bootstrap
 > sudo chown www-data:www-data -R /var/www/listapp
 
 You can post issues on Github:
-https://github.com/newscloud/listapp/issues
+https://github.com/mailgun/listapp/issues
 
 Or, as comments on the mailgun blog:
-http://blog.mailgun.com/post/turnkey-mailing-list-applet-using-the-mailgun-api
+http://blog.mailgun.com/post/turnkey-mailing-list-applet-using-the-mailgun-php-sdk
 
 

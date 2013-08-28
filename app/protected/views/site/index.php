@@ -16,7 +16,7 @@ Yii::import('application.modules.user.UserModule');
   <div class="span5">
     <div class="home-header">
     	  <h1>Welcome to Listapp</h1>
-<p>An open source utility for managing your Mailgun.com mailing lists. <a href="http://blog.mailgun.com/post/turnkey-mailing-list-applet-using-the-mailgun-api">Learn more</a>.</p>
+<p>An open source utility for managing your Mailgun.com mailing lists. <a href="http://blog.mailgun.com/post/turnkey-mailing-list-applet-using-the-mailgun-php-sdk">Learn more</a>.</p>
     	</div>
     </div>  
   <div class="home-content span3">
