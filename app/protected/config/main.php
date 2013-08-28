@@ -3,7 +3,7 @@
   if ($config['env']<>'live') 
     defined('YII_DEBUG') or define('YII_DEBUG',true);
   require_once dirname(__FILE__) . '/../components/helpers.php'; 
-  include dirname(__FILE__) . '/../../../vendor/autoload.php'; // composer autoload
+  include dirname(__FILE__) . '/../vendor/autoload.php'; // composer autoload
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
 #Yii::setPathOfAlias('bootstrap', dirname(FILE).'/../extensions/bootstrap');
@@ -16,7 +16,7 @@ $options = array(
 	'preload'=>array(
 	  'log',
 	  'bootstrap',
-	  'mailgun'
+	  'yiigun', // yii helper library for mailgun
 	  ),
 
 	// autoloading model and component classes
@@ -156,6 +156,7 @@ $options = array(
 		'superuser'=>$config['superuser'],
 		'adminEmail'=>'admin@yourdomain.com',
 		'supportEmail'=>$config['support_email'],
+		'verify_secret'=>$config['verify_secret'],
 		'postsPerPage'=> 10,
 //		'salt'=>$config['salt'],
     'mailgun'=> array(

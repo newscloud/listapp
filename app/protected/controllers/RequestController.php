@@ -47,15 +47,15 @@ class RequestController extends Controller
 	public function actionVerify($id,$hash)
 	{
 	  $request = $this->loadModel($id);
-	  if ($hash==$request->checksum) {
+	  if ($hash==$request->hash) {
       $mglist = Mglist::model()->findByPk($request->mglist_id);
       // insert new Member
       $member_id=$request->insertMember($request->name,$request->address);
       // add member to this list
       Member::model()->addToList($member_id,$request->mglist_id);
       // add member at Mailgun
-		  $mg = new Mailgun();
-		  $mg->memberAdd($mglist->address,$request->address,$request->name);      
+		  $yg = new Yiigun();
+		  $yg->memberAdd($mglist->address,$request->address,$request->name);      
   		$this->render('verify',array(
   			'model'=>$this->loadModel($id),
   			'mglist'=>$mglist,
@@ -90,14 +90,15 @@ class RequestController extends Controller
 		$this->performAjaxValidation($model);
 		if(isset($_POST['Request']))
 		{
+		  $model->mglist_id = $id;
 			$model->attributes=$_POST['Request'];
-			$model->mglist_id = $id;
-			$model->checksum = rand(100,10000);
-			if($model->save()) {
-			  $body="Please verify your subscription by clicking on the link below:\r\n".Yii::app()->getBaseUrl(true)."/request/verify/".$model->id."/".$model->checksum;
-			  $mg = new Mailgun;			  
-			  $mg->send_simple_message($model->address,'Please verify your subscription to '.$mglist->name,$body,Yii::app()->params['support_email']);
-  				$this->redirect(array('view','id'=>$model->id));
+			$model->checksum = 0; // unused now - prior rand(100,10000);
+		  $yg = new Yiigun();
+      $model->hash = $yg->generateVerifyHash($model,$mglist);      
+      $res = $model->save();
+      if($model->save()) {
+			  $yg->sendVerificationRequest($model,$mglist);
+  			$this->redirect(array('view','id'=>$model->id));
 			}
 		}
 

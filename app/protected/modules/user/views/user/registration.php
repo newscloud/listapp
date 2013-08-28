@@ -4,7 +4,7 @@ $this->breadcrumbs=array(
 );
 ?>
 
-<h1>Sign Up with Geogram</h1>
+<h1>Sign Up with ListApp</h1>
 
 <?php
 if(Yii::app()->user->hasFlash('fb_problem')) {

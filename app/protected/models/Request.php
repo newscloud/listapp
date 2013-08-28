@@ -54,9 +54,8 @@ class Request extends CActiveRecord
 
   public function mailgunValidator($attribute,$params)
   {
-        $mg = new Mailgun();
-   	    $json_result = $mg->validate($this->$attribute);
-   	    $result = json_decode($json_result);
+        $yg = new Yiigun();
+   	    $result = $yg->validate($this->$attribute);
    	    if ($result->is_valid)
    	      return false;
    	    else {

@@ -114,12 +114,12 @@ class Mglist extends CActiveRecord
 	public function sync() {
 	  // Sync all lists and their members
 	  $this->output_str = '';
-	  $mg = new Mailgun();
-	  $my_lists = json_decode($mg->fetchLists(),true);
-  foreach ($my_lists['items'] as $item) {
-  	  $this->output_str.='<p>Synchronizing list: '.$item['name'].'<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-        $this->upsert($item);
-    	  $lookup_item=$this->findByAttributes(array('address'=>$item['address']));
+	  $yg = new Yiigun();
+	  $my_lists = $yg->fetchLists();
+  foreach ($my_lists->items as $item) {
+  	  $this->output_str.='<p>Synchronizing list: '.$item->name.'<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+  	  // add to local db
+        $this->upsert($item);    	          $lookup_item=$this->findByAttributes(array('address'=>$item->address));        
     	  $this->syncListMembers($lookup_item['id'],true);
     	  $this->output_str.='<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fetching members... <br />';  	  
     	  $this->output_str.='</p>';
@@ -128,21 +128,22 @@ class Mglist extends CActiveRecord
 	}
 	
 	public function syncListMembers($id=0,$in_batch=false) {
+	  // fetch list members from Mailgun.com
 	  // don't build membership detail report for batch list sync
 	  if (is_null($id)) return false;
 	  $output_str = '';
     $mglist = $this->findByPk($id);    
-	  $mg = new Mailgun();
+	  $yg = new Yiigun();
 	  // fetch list address based on $id
-	  $temp_json = $mg->fetchListMembers($mglist['address']);
-	  $my_members = json_decode($temp_json,true);
-  foreach ($my_members['items'] as $member) {
-	    $output_str.='<p>Upserting member: '.$member['name'].' &lt;'.$member['address'].'&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	    $m = new Member();      
-      $temp_str=$m->upsert($member);
+	  $my_members = $yg->fetchListMembers($mglist['address']);
+  foreach ($my_members->items as $member) {
+	    $output_str.='<p>Upserting member: '.$member->name.' &lt;'.$member->address.'&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	    $m = new Member();
+	    // add to local db
+      $temp_str=$m->upsert($member); 
   	  $output_str.=$temp_str;
       // add to join table
-      $member=Member::model()->findByAttributes(array('address'=>$member['address']));
+      $member=Member::model()->findByAttributes(array('address'=>$member->address));
   	  Member::model()->addToList($member['id'],$id);
   	  $output_str.='</p>';
 	  }
@@ -151,7 +152,7 @@ class Mglist extends CActiveRecord
 	
 	public function upsert($item) {
 	  // create if new, otherwise update fields
-	  $lookup_item=$this->findByAttributes(array('address'=>$item['address']));
+	  $lookup_item=$this->findByAttributes(array('address'=>$item->address));
 	  if (!is_null($lookup_item)) {
 	    $this->updateProperties($lookup_item,$item);
 	  } else {
@@ -161,10 +162,10 @@ class Mglist extends CActiveRecord
 
   public function updateProperties($mgl,$list) {
     $this->output_str.='updating properties from Mailgun';
-    $mgl->name = $list['name'];
-    $mgl->access_level = $list['access_level'];
-    $mgl->address = $list['address'];
-    $mgl->description = $list['description'];
+    $mgl->name = $list->name;
+    $mgl->access_level = $list->access_level;
+    $mgl->address = $list->address;
+    $mgl->description = $list->description;
     $mgl->modified_at =new CDbExpression('NOW()');
     $mgl->update();
   }
@@ -172,10 +173,10 @@ class Mglist extends CActiveRecord
   public function create($list) {
     $this->output_str.='creating list...';
     $mgl = new Mglist();
-    $mgl->name = $list['name'];
-    $mgl->access_level = $list['access_level'];
-    $mgl->address = $list['address'];
-    $mgl->description = $list['description'];
+    $mgl->name = $list->name;
+    $mgl->access_level = $list->access_level;
+    $mgl->address = $list->address;
+    $mgl->description = $list->description;
     $mgl->created_at =new CDbExpression('NOW()'); 
     $mgl->modified_at =new CDbExpression('NOW()');          
     //$list->members_count

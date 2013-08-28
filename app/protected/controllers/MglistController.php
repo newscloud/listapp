@@ -79,17 +79,15 @@ class MglistController extends Controller
 	public function actionCreate()
 	{
 		$model=new Mglist;
-
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-
 		if(isset($_POST['Mglist']))
 		{
 			$model->attributes=$_POST['Mglist'];
 			$model->access_level = $_POST['access_level'];
-			if($model->save()) {
-  		  $mg = new Mailgun;        
-  		  $mg->listCreate($model);
+			if ($model->save()) {
+			  $yg = new Yiigun();
+  		  $yg->listCreate($model);
 				$this->redirect(array('view','id'=>$model->id));
 			}
 		}
@@ -123,8 +121,8 @@ class MglistController extends Controller
 		{
 			$model->attributes=$_POST['Mglist'];
 			$model->access_level = $_POST['access_level'];
-		  $mg = new Mailgun;        
-		  $result = $mg->listUpdate($existing_address,$model);			
+		  $yg = new Yiigun;        
+		  $result = $yg->listUpdate($existing_address,$model);			
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -146,8 +144,8 @@ class MglistController extends Controller
 			// we only allow deletion via POST request
 			$model = $this->loadModel($id);
 			// delete at Mailgun
-		  $mg = new Mailgun;        
-		  $mg->listDelete($model->address);			
+		  $yg = new Yiigun;        
+		  $yg->listDelete($model->address);			
 		  // delete locally
 		  $model->delete(); 
 
@@ -171,7 +169,7 @@ class MglistController extends Controller
 	 * Manages all models.
 	 */
 	public function actionAdmin()
-	{
+	{	  
 		$model=new Mglist('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Mglist']))

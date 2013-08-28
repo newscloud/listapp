@@ -110,13 +110,13 @@ class DefaultController extends Controller
                             $user = User::model()->findByAttributes(array('email'=>$profile->email));
                             if (!is_null($user)) {
                               // to do - create way to associate facebook account
-                              Yii::app()->user->setFlash('email_problem','Your email already exists. Please log in to your Geogram account with your email. Once you sign in, you can link your Facebook account.');
+                              Yii::app()->user->setFlash('email_problem','Your email already exists. Please log in to your account with your email.');
                               Yii::app()->user->setReturnUrl('/user/profile/edit');
                               $this->redirect('/user/login');
                             }     
                             if($profile->email=='') {
                               lg ('Hybrid: No email, report error & redirect user');
-                              Yii::app()->user->setFlash('email_problem','Because Geogram is primarily an email group service, we require your email for registration.');
+                              Yii::app()->user->setFlash('email_problem','We require your email for registration.');
                               $this->redirect('/user/registration');
                             }                         
                           // we want to create a new user

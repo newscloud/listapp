@@ -105,9 +105,9 @@ class Member extends CActiveRecord
 		));
 	}
 	
+	// create a new member, or update fields of existing member
 	public function upsert($member) {
-	  // create if new, otherwise update fields
-	  $lookup_item=$this->findByAttributes(array('address'=>$member['address']));
+$lookup_item=$this->findByAttributes(array('address'=>$member->address));
 	  if (!is_null($lookup_item)) {
 	    $this->updateProperties($lookup_item,$member);
       return 'updating properties from Mailgun';
@@ -116,22 +116,24 @@ class Member extends CActiveRecord
 	  }
 	}
 
+  // update member properties in local db
   public function updateProperties($member_in_db,$member_at_mg) {
-    $member_in_db->name = $member_at_mg['name'];
-    $member_in_db->address = $member_at_mg['address'];
-    if ($member_at_mg['subscribed'])
+    $member_in_db->name = $member_at_mg->name;
+    $member_in_db->address = $member_at_mg->address;
+    if ($member_at_mg->subscribed)
       $member_in_db->status = 1;
     else
       $member_in_db->status = 0; // unsubscribed
     $member_in_db->modified_at =new CDbExpression('NOW()');
     $member_in_db->update();
   }
-  
+
+  // create member in local db
   public function create($member) {
     $output_str='creating member...';
-    $this->name = $member['name'];
-    $this->address = $member['address'];
-    if ($member['subscribed'])
+    $this->name = $member->name;
+    $this->address = $member->address;
+    if ($member->subscribed)
       $this->status = 1;
     else
       $this->status = 0; // unsubscribed

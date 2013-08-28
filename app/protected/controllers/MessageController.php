@@ -59,8 +59,8 @@ class MessageController extends Controller
       $model->modified_at =new CDbExpression('NOW()');          
 			if($model->save()) {
 		    Yii::app()->user->setFlash('messageSubmitted','Thank you, your message has been posted.'); 
-		    $mg = new Mailgun;
-		    $lookup_item = Mglist::model()->findByPk($model->mglist_id); $mg->send_simple_message($lookup_item['address'],$model->subject,$model->body,Yii::app()->params['superuser']);
+		    $yg = new Yiigun;
+		    $lookup_item = Mglist::model()->findByPk($model->mglist_id); $yg->send_simple_message($lookup_item['address'],$model->subject,$model->body,Yii::app()->params['superuser']);
 		    
 				$this->redirect('/mglist/index');
 			  

@@ -69,7 +69,7 @@ class MemberController extends Controller
 	}
 
 	/**
-	 * Creates a new model.
+	 * Creates a new member.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
 	public function actionCreate($id)
@@ -90,8 +90,8 @@ class MemberController extends Controller
 			  $model->addToList($model->id,$mglist_id);
 			  $lookup_list = Mglist::model()->findByPk($mglist_id);
 			  // to do fetch list address
-			  $mg = new Mailgun();
-			  $mg->memberAdd($lookup_list['address'],$model->address,$model->name);
+			  $yg = new Yiigun();
+			  $yg->memberAdd($lookup_list['address'],$model->address,$model->name);
 				$this->redirect('/mglist/'.$mglist_id);
 		}
 
@@ -239,11 +239,11 @@ class MemberController extends Controller
           
     			if($model->save()) {
             Yii::app()->user->setFlash('import_success','Thank you! Your messages have been submitted.');
-            $mg = new Mailgun;
+            $yg = new Yiigun;
             // echo $json_upload;
             $list_item = Mglist::model()->findByPk($id);
             // echo $list_item['address'];
-            $mg->memberBulkAdd($list_item['address'],$json_upload);
+            $yg->memberBulkAdd($list_item['address'],$json_upload);
   				  $this->redirect('/mglist/'.$id);			  
     			}
     		}

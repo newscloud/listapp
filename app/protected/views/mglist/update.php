@@ -5,12 +5,14 @@ $this->breadcrumbs=array(
 	'Update',
 );
 
+/*
 $this->menu=array(
 	array('label'=>'List Mglist','url'=>array('index')),
 	array('label'=>'Create Mglist','url'=>array('create')),
 	array('label'=>'View Mglist','url'=>array('view','id'=>$model->id)),
 	array('label'=>'Manage Mglist','url'=>array('admin')),
 );
+*/
 ?>
 
 <h1>Update Mglist <?php echo $model->name; ?></h1>
