@@ -301,6 +301,7 @@ class Mglist extends CActiveRecord
 
   // builds a master list with all members in your system
   public function createAll() {
+    set_time_limit(1200);
     // assumption: that you run sync lists first to fully update your local db
 	  $yg = new Yiigun();    
     // check if master list exists at mailgun
