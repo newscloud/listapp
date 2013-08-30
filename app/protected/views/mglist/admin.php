@@ -48,7 +48,7 @@ $('.search-form form').submit(function(){
             'header' => 'Name',
             'name'=>'name',
             'value' => 'CHtml::link($data->name,array(\'mglist/view\',\'id\'=>$data->id))',
-            'htmlOptions'=>array('width'=>'150px')
+            'htmlOptions'=>array('width'=>'200px')
           ),
           array(
                   'type' => 'raw',
@@ -57,13 +57,19 @@ $('.search-form form').submit(function(){
                   'value' => 'CHtml::link($data->address,array(\'mglist/view\',\'id\'=>$data->id))',
                   'htmlOptions'=>array('width'=>'150px')
             ),
+            array(
+                    'header' => 'Members',
+                    'value' => '$data->member_count($data->id)',
+                    'htmlOptions'=>array('width'=>'50px','style'=>'text-align:center;')
+              ),
+
 		'access_level',
 		/*
 		'created_at',
 		'modified_at',
 		*/
 		array(
-		  'htmlOptions'=>array('width'=>'150px'),  		
+		  'htmlOptions'=>array('width'=>'250px'),  		
 			'class'=>'bootstrap.widgets.TbButtonColumn',
 			'header'=>'Options',
       'template'=>'{send}{manage}{sync}{update}{delete}{subscribe}',

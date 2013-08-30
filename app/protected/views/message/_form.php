@@ -1,7 +1,10 @@
-<?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
+<?php 
+
+$form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
 	'id'=>'message-form',
 	'enableAjaxValidation'=>false,
-)); ?>
+)); 
+?>
 
 	<p class="help-block">Fields with <span class="required">*</span> are required.</p>
 
@@ -21,7 +24,12 @@
 
 	<?php echo $form->textFieldRow($model,'subject',array('class'=>'span5','maxlength'=>255)); ?>
 
-	<?php echo $form->textAreaRow($model,'body',array('rows'=>6, 'cols'=>50, 'class'=>'span8')); ?>
+	<?php 
+	$model->body = "Hi %recipient_fname%,
+
+If you no longer wish to receive messages like this from me, visit %mailing_list_unsubscribe_url%.";
+  
+	echo $form->textAreaRow($model,'body',array('rows'=>6, 'cols'=>50, 'class'=>'span8')); ?>
 
 	<div class="form-actions">
 		<?php $this->widget('bootstrap.widgets.TbButton', array(

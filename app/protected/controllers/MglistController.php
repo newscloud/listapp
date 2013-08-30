@@ -31,7 +31,7 @@ class MglistController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('index','view','syncAll','syncList','create','update','send'),
+				'actions'=>array('index','view','syncAll','syncList','create','update','send','createAll','duplicate','uniqify'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -106,6 +106,22 @@ class MglistController extends Controller
       return 'subscribed';
   }
 
+  public function actionDuplicate($id) {
+    // make a copy of this list
+    $mgl = new Mglist();
+    $result = $mgl->duplicate($id);
+		$this->redirect(array('index'));
+    
+  }
+
+  public function actionUniqify($id) {
+    // remove members of other lists from this list
+    $mgl = new Mglist();
+    $result = $mgl->uniqify($id);
+		$this->redirect(array('index'));    
+  }
+
+  
 	/**
 	 * Updates a particular model.
 	 * If update is successful, the browser will be redirected to the 'view' page.
@@ -143,11 +159,12 @@ class MglistController extends Controller
 		{
 			// we only allow deletion via POST request
 			$model = $this->loadModel($id);
-			// delete at Mailgun
-		  $yg = new Yiigun;        
-		  $yg->listDelete($model->address);			
+			$address = $model->address;
 		  // delete locally
 		  $model->delete(); 
+			// delete at Mailgun
+		  $yg = new Yiigun;        
+		  $yg->listDelete($address);
 
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			if(!isset($_GET['ajax']))
@@ -205,5 +222,12 @@ class MglistController extends Controller
 			Yii::app()->end();
 		}
 	}
+
+  public function actionCreateAll() {
+    // build master list from all other lists
+    $mgl = new Mglist();
+    $result = $mgl->createAll();    
+		$this->redirect(array('index'));
+  }
 
 }

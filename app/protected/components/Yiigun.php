@@ -31,8 +31,12 @@ class Yiigun extends CComponent
     return $result->http_response_body;    
   }
 
-  public function fetchListMembers($address) {
-    $result = $this->mg->get("lists/".$address.'/members');
+  public function fetchListMembers($address,$skip=0,$limit =100) {
+    $result = $this->mg->get("lists/".$address.'/members',array(
+//      'subscribed'=>'yes',
+        'limit'=>$limit,
+        'skip'=>$skip
+    ));
     return $result->http_response_body;    
   }
 
@@ -56,12 +60,29 @@ class Yiigun extends CComponent
     return $result->http_response_body;    
    }  
 
+   public function wrapJsonStr($str='') {
+     // remove trailing comma
+     $str=trim($str,',');     
+     $str = '['.$str.']';
+     return $str;
+   }  
+
+   public function createJsonMember($name,$address) {
+     // construct json string for a member for a bulk add operation
+     $str='{';
+     $str.='"name": "'.$name.'", ';                  
+     $str.='"address": "'.$address.'"';                  
+     $str.='},';
+    return $str; 
+    }
+   
    public function memberBulkAdd($list='',$json_str='') {
+     // limit of 1000 members at a time
      $result = $this->mg->post("lists/".$list.'/members.json',array(
     'members' => $json_str,
      'subscribed' => true,
      'upsert' => 'yes'
-     ));
+     ));  
      return $result->http_response_body;    
    }
   
@@ -69,7 +90,12 @@ class Yiigun extends CComponent
     $result = $this->mg->post("lists/".$list.'/members',array('address'=>$email,'name'=>$name,'subscribed' => true,'upsert' => 'yes'));
     return $result->http_response_body;    
   }
-  
+
+  public function memberDelete($list='',$email='') {
+    $result = $this->mg->delete("lists/".$list.'/members/'.$email);
+    return $result->http_response_body;    
+  }
+    
   public function memberUpdate($list='',$email='',$propList) {
     $result = $this->mg->put("lists/".$list.'/members',$propList);
     return $result->http_response_body;    

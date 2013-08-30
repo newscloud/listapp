@@ -1,5 +1,4 @@
 <?php
-
 class MemberController extends Controller
 {
 	/**
@@ -85,7 +84,10 @@ class MemberController extends Controller
 			$model->attributes=$_POST['Member'];
       $model->status=1;
 			$model->created_at =new CDbExpression('NOW()'); 
-      $model->modified_at =new CDbExpression('NOW()');                
+      $model->modified_at =new CDbExpression('NOW()');  
+      // to do - note member records aren't shared across lists, not unique
+      // to add this functionality, removes need to be sensitive to removing entries from members table
+      // until not on any lists              
 			if($model->save())
 			  $model->addToList($model->id,$mglist_id);
 			  $lookup_list = Mglist::model()->findByPk($mglist_id);
@@ -170,6 +172,7 @@ class MemberController extends Controller
 		));
 	}
 
+  
   /**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
@@ -178,81 +181,117 @@ class MemberController extends Controller
 	{
 	      $model = new Import();
     		$model->mglist_id = $id;
+    		
     		// Uncomment the following line if AJAX validation is needed
-    		// $this->performAjaxValidation($model);
+    		$this->performAjaxValidation($model);
     		if(isset($_POST['Import']))
     		{
-    			$temp_email_list = $_POST['Import']['email_list'];
-          include('Mail/RFC822.php');
-          $parser = new Mail_RFC822();
-          // replace the backslash quotes 
-          $tolist=str_replace('\\"','"',$temp_email_list); 
-          // split the elements by line and by comma 
-          $to_email_array = preg_split ("(\r|\n|,)", $tolist, -1, PREG_SPLIT_NO_EMPTY);
-          $num_emails = count ($to_email_array); 
-          $temp ='';
-          // construct bulk list of new members for mailgun api call
-          $json_upload ='[';          
-          for ($count = 0; $count < $num_emails && $count <= 500; $count++) 
-          {
-            $json_upload.='{';
-            $toAddress=trim($to_email_array[$count]);
-            if ($toAddress<>'') {
-              $addresses = $parser->parseAddressList('my group:'.$toAddress,'yourdomain.com', false,true);
-              foreach ($addresses as $i) {
-                if ($i->mailbox<>'' and $i->host<>'') {
-                  $temp.=$i->mailbox.'@'.$i->host.',';
-                }
-                $m = new Member();
-                if ($i->personal<>'') {
-                  $m->name = $i->personal;
-                  $json_upload.='"name": "'.$m->name.'", ';                  
-                }
-                else 
-                  $m->name ='';
-                $m->address=$i->mailbox.'@'.$i->host;
-                $json_upload.='"address": "'.$m->address.'"';                  
-                $m->status=1;
-                $m->created_at = new CDbExpression('NOW()'); 
-                $m->modified_at = new CDbExpression('NOW()');          	                  
-                 // echo $m->name.' '.$m->address.' ->'.$id.'<br />';
- $lookup_item=Member::model()->findByAttributes(array('address'=>$m->address));
-            	  if (!is_null($lookup_item)) {
-            	       // member exists
-                     // echo 'exists'.$lookup_item['id'];
-            	      $m->addToList($lookup_item['id'],$id);
-            	  } else {
-            	    // new member
-                  $m->save();
-                  $last_id = Yii::app()->db->getLastInsertID();
-                  // echo 'saved'.$last_id;
-                  $m->addToList($last_id,$id);
-            	  }
-              } 
-            }
-            $json_upload.='},';            
-          }      
-          $temp=trim($temp,',');
-          $model->email_list = $temp;
-          $json_upload=trim($json_upload,',');
-          $json_upload .=']';
-          
     			if($model->save()) {
-            Yii::app()->user->setFlash('import_success','Thank you! Your messages have been submitted.');
-            $yg = new Yiigun;
-            // echo $json_upload;
+    			  // load PEAR mail lib
+            include('Mail/RFC822.php');
+            $parser = new Mail_RFC822();
+            // load yiigun  lib
+            $yg = new Yiigun;            
+            // fetch list info
             $list_item = Mglist::model()->findByPk($id);
-            // echo $list_item['address'];
-            $yg->memberBulkAdd($list_item['address'],$json_upload);
-  				  $this->redirect('/mglist/'.$id);			  
-    			}
-    		}
-
-    		$this->render('import',array(
-    			'model'=>$model,'mglist_id'=>$id,
-    		));
+            // begin processing import of email list
+      			$posted_email_list = $_POST['Import']['email_list'];
+            // replace the backslash quotes 
+            $tolist=str_replace('\\"','"',$posted_email_list);
+            // split the elements by line and by comma 
+            $to_email_array = preg_split ("(\r|\n|,)", $tolist, -1, PREG_SPLIT_NO_EMPTY);
+            $num_emails = count ($to_email_array); 
+            $counter =0;
+            $uploadStr='';                        
+              // to do
+              // to strip apostrophes from names
+            // fix importer to find emails in first or last name
+            // and to split on :::
+            $debug = false;
+            $count_added =0;
+            $count_errors =0;
+            $email_list ='';
+            $error_text = '';
+            $alpha=set_error_handler("parseError");
+            foreach($to_email_array as $email) {              
+              $toAddress=trim($email);
+              // strip out invalid characters
+              $toAddress=str_replace('%','',$toAddress);              
+              if ($toAddress<>'') {
+                if (substr_count ( $toAddress , '@')<>1) {
+                  $error_text.=htmlspecialchars($toAddress).', <br />';
+                  $count_errors+=1;
+                  continue;
+                }                
+                //echo '<p>'.htmlspecialchars($toAddress).'</p>';
+                $addresses = $parser->parseAddressList('my group:'.$toAddress,'yourdomain.com', false,true);
+                $count_added+=1;
+                foreach ($addresses as $i) {
+                  $uploadStr.='{';
+                    $m = new Member();
+                     if ($i->mailbox<>'' and $i->host<>'') {
+                       //echo 'adding to email_list'.$i->mailbox;
+                       $email_list.=$i->personal.' ('.$i->mailbox.'@'.$i->host.'), <br />';
+                     }
+                     if ($i->personal<>'') {
+                       $m->name = $i->personal;
+                       $uploadStr.='"name": "'.$m->name.'", ';                  
+                     }
+                     else 
+                       $m->name ='';
+                     $m->address=$i->mailbox.'@'.$i->host;
+                     $uploadStr.='"address": "'.$m->address.'"';                  
+                     $m->status=1;
+                     $m->created_at = new CDbExpression('NOW()'); 
+                     $m->modified_at = new CDbExpression('NOW()');          	                  
+                      // echo $m->name.' '.$m->address.'<br />';
+      $lookup_item=Member::model()->findByAttributes(array('address'=>$m->address));
+                    if (!$debug) {
+                   	  if (!is_null($lookup_item)) {
+                   	       // member exists
+                   	      $m->addToList($lookup_item['id'],$model->mglist_id);
+                   	  } else {
+                   	    // new member
+                         $m->save();
+                         $last_id = Yii::app()->db->getLastInsertID();
+                         $m->addToList($last_id,$model->mglist_id);
+                   	  }                      
+                    }
+                    $uploadStr.='},';            
+                }  // foreach addresses as i
+              } // end toaddress <>''
+                 $counter+=1;
+                 // count by 1000 to manage cloud upload
+                   if ($counter>=900) {
+                     if (!$debug) {
+                     $uploadStr=$yg->wrapJsonStr($uploadStr);
+                     $yg->memberBulkAdd($list_item['address'],$uploadStr);      
+                      } 
+                      $counter =0;
+                      $uploadStr='';                
+                    }
+            } // end foreach toemail array      
+            // upload last group to cloud   
+            if (!$debug) {
+              if ($uploadStr<>'') {
+                $uploadStr=$yg->wrapJsonStr($uploadStr);
+                $yg->memberBulkAdd($list_item['address'],$uploadStr);      
+              }
+            }
+            $email_list=trim($email_list,',');
+            $model->email_list = $email_list;                            
+            Yii::app()->user->setFlash('import_success','Thank you! Your messages have been submitted.');
+        		$this->render('imported',array(
+        			'added'=>$email_list,'errors'=>$error_text,'count_added'=>$count_added,'count_errors'=>$count_errors,
+        		));
+            } // end if save
+    			 // end if post
+  			} else {
+      		$this->render('import',array(
+      			'model'=>$model,'mglist_id'=>$id,
+      		));  			  
+  			}
 	}
-
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
@@ -279,4 +318,10 @@ class MemberController extends Controller
 			Yii::app()->end();
 		}
 	}
+
 }
+
+function parseError($errno, $errstr, $errfile, $errline)
+{
+}
+

@@ -11,6 +11,8 @@ $this->menu=array(
 	
 	array('label'=>'Update Properties','url'=>array('update','id'=>$model->id)),
 	array('label'=>'Delete','url'=>'#','linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
+	array('label'=>'Duplicate list','url'=>array('duplicate','id'=>$model->id)),
+	array('label'=>'Remove other lists\' members','url'=>array('uniqify','id'=>$model->id)),
 	array('label'=>'View subscribe form','url'=>array('request/create','id'=>$model->id)),
   
 );
