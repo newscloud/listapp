@@ -1,0 +1,294 @@
+-- phpMyAdmin SQL Dump
+-- version 3.5.5
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Aug 30, 2013 at 11:58 PM
+-- Server version: 5.5.29
+-- PHP Version: 5.4.10
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `listapp`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `la_AuthAssignment`
+--
+
+CREATE TABLE `la_AuthAssignment` (
+  `itemname` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `userid` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `bizrule` text COLLATE utf8_unicode_ci,
+  `data` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`itemname`,`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `la_AuthItem`
+--
+
+CREATE TABLE `la_AuthItem` (
+  `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `type` int(11) NOT NULL,
+  `description` text COLLATE utf8_unicode_ci,
+  `bizrule` text COLLATE utf8_unicode_ci,
+  `data` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `la_AuthItemChild`
+--
+
+CREATE TABLE `la_AuthItemChild` (
+  `parent` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `child` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`parent`,`child`),
+  KEY `fk_AuthItemChild_child` (`child`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `la_member`
+--
+
+CREATE TABLE `la_member` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `address` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `vars` text COLLATE utf8_unicode_ci,
+  `status` tinyint(4) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `member_id` (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4453 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `la_membership`
+--
+
+CREATE TABLE `la_membership` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mglist_id` int(11) DEFAULT '0',
+  `member_id` int(11) DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `membership_id` (`id`),
+  KEY `fk_mglist` (`mglist_id`),
+  KEY `fk_member` (`member_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=8904 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `la_message`
+--
+
+CREATE TABLE `la_message` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mglist_id` int(11) DEFAULT '0',
+  `subject` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `body` text COLLATE utf8_unicode_ci,
+  `status` tinyint(4) NOT NULL DEFAULT '0',
+  `sent_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `member_id` (`id`),
+  KEY `fk_message_list` (`mglist_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `la_mglist`
+--
+
+CREATE TABLE `la_mglist` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `address` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci,
+  `access_level` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `mglist_id` (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `la_migration`
+--
+
+CREATE TABLE `la_migration` (
+  `version` varchar(255) NOT NULL,
+  `apply_time` int(11) DEFAULT NULL,
+  PRIMARY KEY (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `la_profiles`
+--
+
+CREATE TABLE `la_profiles` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `profile_image_url` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `la_profiles_fields`
+--
+
+CREATE TABLE `la_profiles_fields` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `varname` varchar(50) NOT NULL DEFAULT '',
+  `title` varchar(255) NOT NULL DEFAULT '',
+  `field_type` varchar(50) NOT NULL DEFAULT '',
+  `field_size` int(3) NOT NULL DEFAULT '0',
+  `field_size_min` int(3) NOT NULL DEFAULT '0',
+  `required` int(1) NOT NULL DEFAULT '0',
+  `match` varchar(255) NOT NULL DEFAULT '',
+  `range` varchar(255) NOT NULL DEFAULT '',
+  `error_message` varchar(255) NOT NULL DEFAULT '',
+  `other_validator` text,
+  `default` varchar(255) NOT NULL DEFAULT '',
+  `widget` varchar(255) NOT NULL DEFAULT '',
+  `widgetparams` text,
+  `position` int(3) NOT NULL DEFAULT '0',
+  `visible` int(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `la_request`
+--
+
+CREATE TABLE `la_request` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mglist_id` int(11) DEFAULT '0',
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `address` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `checksum` int(11) DEFAULT '0',
+  `verified` tinyint(4) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `hash` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `request_id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `la_social`
+--
+
+CREATE TABLE `la_social` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `yiiuser` int(11) DEFAULT '0',
+  `provider` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `provideruser` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `social_id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `la_users`
+--
+
+CREATE TABLE `la_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(128) NOT NULL DEFAULT '',
+  `password` varchar(128) NOT NULL DEFAULT '',
+  `email` varchar(128) NOT NULL DEFAULT '',
+  `activkey` varchar(128) NOT NULL DEFAULT '',
+  `superuser` int(1) NOT NULL DEFAULT '0',
+  `status` int(1) NOT NULL DEFAULT '0',
+  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `lastvisit_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_username` (`username`),
+  UNIQUE KEY `user_email` (`email`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `la_user_sessions`
+--
+
+CREATE TABLE `la_user_sessions` (
+  `user_id` int(11) NOT NULL,
+  `hybridauth_session` text COLLATE utf8_unicode_ci NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY `fk_user_sessions_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `la_AuthAssignment`
+--
+ALTER TABLE `la_AuthAssignment`
+  ADD CONSTRAINT `fk_AuthAssignment_itemname` FOREIGN KEY (`itemname`) REFERENCES `la_AuthItem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `la_AuthItemChild`
+--
+ALTER TABLE `la_AuthItemChild`
+  ADD CONSTRAINT `fk_AuthItemChild_child` FOREIGN KEY (`child`) REFERENCES `la_AuthItem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_AuthItemChild_parent` FOREIGN KEY (`parent`) REFERENCES `la_AuthItem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `la_membership`
+--
+ALTER TABLE `la_membership`
+  ADD CONSTRAINT `fk_member` FOREIGN KEY (`member_id`) REFERENCES `la_member` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_mglist` FOREIGN KEY (`mglist_id`) REFERENCES `la_mglist` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `la_message`
+--
+ALTER TABLE `la_message`
+  ADD CONSTRAINT `fk_message_list` FOREIGN KEY (`mglist_id`) REFERENCES `la_mglist` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `la_profiles`
+--
+ALTER TABLE `la_profiles`
+  ADD CONSTRAINT `user_profile_id` FOREIGN KEY (`user_id`) REFERENCES `la_users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `la_user_sessions`
+--
+ALTER TABLE `la_user_sessions`
+  ADD CONSTRAINT `fk_user_sessions_id` FOREIGN KEY (`user_id`) REFERENCES `la_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
