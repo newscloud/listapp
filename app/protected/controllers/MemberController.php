@@ -177,7 +177,7 @@ class MemberController extends Controller
 	  echo 'List id:'.$id;lb();
 	  $l = Mglist::model()->findByPk($id);
 	  echo $l['name'];lb();
-    $m=Membership::model()->findByAttributes(array('mglist_id'=>$id));
+    $m=Membership::model()->findAllByAttributes(array('mglist_id'=>$id));
     foreach ($m as $i) {
         $p = Member::model()->findByPk($i['member_id']);
         echo $p['name'].' &lt;'.$p['address'].'&gt;<br />';
