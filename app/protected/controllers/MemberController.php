@@ -176,7 +176,8 @@ class MemberController extends Controller
 	{
     $m=Membership::model()->findByAttributes(array('mglist_id'=>$id));
     foreach ($m as $i) {
-      var_dump($i);
+      var_dump($i['member']['name']);
+      var_dump($i['member']);
       lb();
     }
 /*
