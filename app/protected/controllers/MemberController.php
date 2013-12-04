@@ -30,7 +30,7 @@ class MemberController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update','import','index','view'),
+				'actions'=>array('create','update','import','index','view','export'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -172,7 +172,19 @@ class MemberController extends Controller
 		));
 	}
 
-  
+	public function actionExport($id=0)
+	{
+    $m=Membership::model()->findByAttributes(array('mglist_id'=>$id));
+    foreach ($m as $i) {
+      var_dump($i->member);
+      lb();
+    }
+/*
+	  $this->render('export',array(
+			'members'=>$members,
+		));  			  		
+		*/
+  }
   /**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
