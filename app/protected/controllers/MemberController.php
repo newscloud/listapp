@@ -174,9 +174,12 @@ class MemberController extends Controller
 
 	public function actionExport($id=0)
 	{
+	  echo 'List id:'.$id;lb();
+	  $l = Mglist::model()->findByPk($id);
+	  echo $l['name'];lb();
     $m=Membership::model()->findByAttributes(array('mglist_id'=>$id));
     foreach ($m as $i) {
-        $p = Member::model()->findByPk($i['id']);
+        $p = Member::model()->findByPk($i['member_id']);
         echo $p['name'].' &lt;'.$p['address'].'&gt;<br />';
     }
   }
