@@ -177,16 +177,8 @@ class MemberController extends Controller
     $m=Membership::model()->findByAttributes(array('mglist_id'=>$id));
     foreach ($m as $i) {
         $p = Member::model()->findByPk($i['id']);
-        echo $p['name'].' &lt;'.$p['address'].'&gt;';lb(1);
-//      var_dump($i['member']['name']);
-//      var_dump($i['member']);
-      //lb();
+        echo $p['name'].' &lt;'.$p['address'].'&gt;<br />';
     }
-/*
-	  $this->render('export',array(
-			'members'=>$members,
-		));  			  		
-		*/
   }
   /**
 	 * Creates a new model.
