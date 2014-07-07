@@ -49,6 +49,7 @@ class Message extends CActiveRecord
 			array('subject', 'required'),
 			array('mglist_id, status', 'numerical', 'integerOnly'=>true),
 			array('subject', 'length', 'max'=>255),
+			array('publish_time','lessThanThreeDays'),
 			array('body, sent_at, created_at', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -56,6 +57,12 @@ class Message extends CActiveRecord
 		);
 	}
 
+  public function lessThanThreeDays($attribute,$params)
+     {
+        if (strtotime($this->$attribute)>=(time()+3600*72-180))
+           $this->addError($attribute, 'No more than three days in the future.');
+
+   }
 	/**
 	 * @return array relational rules.
 	 */
