@@ -1,5 +1,6 @@
 <?php
  $config = parse_ini_file(dirname(__FILE__) .'/../../../../../secure/listapp.ini', true);
+ date_default_timezone_set($config['timezone']);
  require_once dirname(__FILE__) . '/../components/helpers.php'; 
  
 // This is the configuration for yiic console application.

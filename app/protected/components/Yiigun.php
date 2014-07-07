@@ -12,7 +12,10 @@ class Yiigun extends CComponent
      $this->mg = new Mailgun(Yii::app()->params['mailgun']['api_key']);
   }
     
-  public function send_simple_message($to='',$subject='',$body='',$from='') {
+  public function send_simple_message($to='',$subject='',$body='',$from='',$delivery_time=0) {
+    if ($delivery_time ==0) {
+      $delivery_time = date('D, d M Y H:i:s O',time());
+    }
     if ($from == '') 
       $from = Yii::app()->params['supportEmail'];
     $domain = Yii::app()->params['mail_domain'];
@@ -22,6 +25,7 @@ class Yiigun extends CComponent
                                                'to' => $to,
                                                'subject' => $subject,
                                                'text' => $body,
+                                               'o:deliverytime'=>$delivery_time,
                                                ));
     return $result->http_response_body;    
   }	

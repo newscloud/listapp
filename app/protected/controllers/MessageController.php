@@ -56,12 +56,16 @@ class MessageController extends Controller
 		{
 			$model->attributes=$_POST['Message'];
 			$model->created_at =new CDbExpression('NOW()'); 
-      $model->modified_at =new CDbExpression('NOW()');          
+      $model->modified_at =new CDbExpression('NOW()');
+      $dev_time_str = strtotime($_POST['Message']['publish_time']);
+      // set two minutes ahead if blank
+      if ($dev_time_str<time()) $dev_time_str=time()+120;
+      $delivery_time = date('D, d M Y H:i:s O',$dev_time_str);
 			if($model->save()) {
 		    Yii::app()->user->setFlash('messageSubmitted','Thank you, your message has been posted.'); 
 		    $lookup_item = Mglist::model()->findByPk($model->mglist_id);
 		    $yg = new Yiigun;
-		     $yg->send_simple_message($lookup_item['address'],$model->subject,$model->body,Yii::app()->params['superuser']);
+		     $yg->send_simple_message($lookup_item['address'],$model->subject,$model->body,Yii::app()->params['superuser'],$delivery_time);
 		    
 				$this->redirect('/mglist/index');
 			  

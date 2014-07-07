@@ -31,6 +31,24 @@ If you no longer wish to receive messages like this from me, visit %mailing_list
   
 	echo $form->textAreaRow($model,'body',array('rows'=>6, 'cols'=>50, 'class'=>'span8')); ?>
 
+<p>Send at (optional):</p>
+<p><em>Click field below to set date and time</em></p>
+<?php
+$this->widget(
+    'ext.jui.EJuiDateTimePicker',
+    array(
+        'model'     => $model,
+        'attribute' => 'publish_time',
+        'language'=> 'en',
+        'mode'    => 'datetime', //'datetime' or 'time' ('datetime' default)
+        'options'   => array(
+            'dateFormat' => 'M d, yy',
+            'timeFormat' => 'hh:mm tt',//'hh:mm tt' default
+            'alwaysSetTime'=> true,
+        ),
+    )
+);
+?>
 	<div class="form-actions">
 		<?php $this->widget('bootstrap.widgets.TbButton', array(
 			'buttonType'=>'submit',

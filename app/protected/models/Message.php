@@ -23,6 +23,8 @@ class Message extends CActiveRecord
 	 * @param string $className active record class name.
 	 * @return Message the static model class
 	 */
+	 public $publish_time;
+	 
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
